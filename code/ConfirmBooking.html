@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Booking - Ticket Booking Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: rgba(31, 41, 55, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(45deg, #38bdf8, #4fd1c5);
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 600;
+        }
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+        .journey-summary .train-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .station-info {
+            text-align: center;
+            width: 30%;
+        }
+        .train-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+        .time {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .station {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .duration {
+            text-align: center;
+            width: 40%;
+            color: #94a3b8;
+            font-size: 14px;
+            position: relative;
+        }
+        .duration::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            right: 20px;
+            top: 50%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 0;
+        }
+        .duration span {
+            background: rgba(31, 41, 55, 0.95);
+            padding: 0 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #94a3b8;
+        }
+        .detail-value {
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+        .price-breakdown .price-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .price-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 18px;
+            color: #ffffff;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .form-group label span {
+            color: #ff6b6b;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            transition: border-color 0.3s ease;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #38bdf8;
+            outline: none;
+            box-shadow: 0 0 5px rgba(56, 189, 248, 0.3);
+        }
+        .form-group input.error, .form-group select.error {
+            border-color: #ff6b6b;
+        }
+        .error-message {
+            color: #ff6b6b;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .confirm-btn {
+            background: linear-gradient(45deg, #4fd1c5, #38bdf8);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .confirm-btn:hover {
+            background: linear-gradient(45deg, #38bdf8, #4fd1c5);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+        }
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            .station-info, .duration {
+                width: 100%;
+            }
+            .journey-summary .train-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        .nav-container {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(40, 40, 70, 0.9);
+            padding: 10px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease-in-out;
+            overflow: hidden;
+        }
+
+        .nav-toggle {
+            background: none;
+            border: none;
+            color: #ffcc00;
+            font-size: 26px;
+            cursor: pointer;
+            padding: 12px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 0;
+            overflow: hidden;
+            transition: width 0.4s ease-in-out;
+        }
+
+        .nav-container.open .nav-links {
+            width: 180px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            font-size: 18px;
+            width: 100%;
+            text-align: center;
+            display: block;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: #ffcc00;
+            color: black;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <button class="nav-toggle" onclick="toggleNav()">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="HomePage.html">Home</a>
+            <a href="Movies.html">Movies</a>
+            <a href="Concerts.html">Concerts</a>
+            <a href="TrainTicketBooking.html">Trains</a>
+            <a href="buses.html">Buses</a>
+            <a href="About.html">About</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="header">
+            <h1>Confirm Your Booking</h1>
+        </div>
+        <div class="content">
+            <div class="section journey-summary">
+                <h2>Journey Summary</h2>
+                <div class="train-info">
+                    <div class="station-info">
+                        <div class="train-name" id="train-name"></div>
+                        <div class="time" id="dep-time"></div>
+                        <div class="station" id="dep-station"></div>
+                    </div>
+                    <div class="duration">
+                        <span id="duration"></span>
+                    </div>
+                    <div class="station-info">
+                        <div class="time" id="arr-time"></div>
+                        <div class="station" id="arr-station"></div>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Class</span>
+                    <span class="detail-value" id="class-type"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Travel Date</span>
+                    <span class="detail-value" id="travel-date"></span>
+                </div>
+            </div>
+
+            <div class="section passenger-details">
+                <h2>Passenger Details</h2>
+                <form id="passenger-form">
+                    <div class="form-group">
+                        <label for="full-name">Full Name <span>*</span></label>
+                        <input type="text" id="full-name" placeholder="Enter full name" required>
+                        <div class="error-message" id="full-name-error">Please enter a valid name</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age <span>*</span></label>
+                        <input type="number" id="age" min="1" max="120" placeholder="Enter age" required>
+                        <div class="error-message" id="age-error">Please enter a valid age (1-120)</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender <span>*</span></label>
+                        <select id="gender" required>
+                            <option value="">Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message" id="gender-error">Please select a gender</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Number <span>*</span></label>
+                        <input type="tel" id="contact" placeholder="Enter 10-digit number" required>
+                        <div class="error-message" id="contact-error">Please enter a valid 10-digit number</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address <span>*</span></label>
+                        <input type="email" id="email" placeholder="Enter email address" required>
+                        <div class="error-message" id="email-error">Please enter a valid email address</div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section price-breakdown">
+                <h2>Price Breakdown</h2>
+                <div class="price-item">
+                    <span>Base Fare</span>
+                    <span id="base-fare"></span>
+                </div>
+                <div class="price-item">
+                    <span>Taxes & Fees</span>
+                    <span id="taxes"></span>
+                </div>
+                <div class="price-item">
+                    <span>Total Amount</span>
+                    <span id="total-amount"></span>
+                </div>
+            </div>
+
+            <div class="section">
+                <button class="confirm-btn" onclick="confirmBooking()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleNav() {
+            document.querySelector(".nav-container").classList.toggle("open");
+        }
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const trainName = decodeURIComponent(urlParams.get('trainName'));
+        const trainNumber = decodeURIComponent(urlParams.get('trainNumber'));
+        const depTime = decodeURIComponent(urlParams.get('depTime'));
+        const arrTime = decodeURIComponent(urlParams.get('arrTime'));
+        const duration = decodeURIComponent(urlParams.get('duration'));
+        const depStation = decodeURIComponent(urlParams.get('depStation'));
+        const arrStation = decodeURIComponent(urlParams.get('arrStation'));
+        const classType = decodeURIComponent(urlParams.get('classType'));
+        const classPrice = decodeURIComponent(urlParams.get('classPrice'));
+        const travelDate = decodeURIComponent(urlParams.get('travelDate'));
+
+        // Populate journey summary
+        document.getElementById('train-name').textContent = `${trainName} (${trainNumber})`;
+        document.getElementById('dep-time').textContent = depTime;
+        document.getElementById('arr-time').textContent = arrTime;
+        document.getElementById('duration').textContent = duration;
+        document.getElementById('dep-station').textContent = depStation;
+        document.getElementById('arr-station').textContent = arrStation;
+        document.getElementById('class-type').textContent = classType;
+        document.getElementById('travel-date').textContent = new Date(travelDate).toLocaleDateString('en-US', { 
+            day: '2-digit', 
+            month: 'short', 
+            year: 'numeric' 
+        });
+
+        // Calculate price breakdown
+        const priceNum = parseFloat(classPrice.replace(/[^0-9.]/g, ''));
+        const baseFare = (priceNum * 0.85).toFixed(2);
+        const taxes = (priceNum * 0.15).toFixed(2);
+        const total = priceNum.toFixed(2);
+
+        document.getElementById('base-fare').textContent = `₹${baseFare}`;
+        document.getElementById('taxes').textContent = `₹${taxes}`;
+        document.getElementById('total-amount').textContent = `₹${total}`;
+
+        function validateForm() {
+            let isValid = true;
+            const fullName = document.getElementById('full-name');
+            const age = document.getElementById('age');
+            const gender = document.getElementById('gender');
+            const contact = document.getElementById('contact');
+            const email = document.getElementById('email');
+
+            // Reset error states
+            [fullName, age, gender, contact, email].forEach(field => {
+                field.classList.remove('error');
+                document.getElementById(`${field.id}-error`).style.display = 'none';
+            });
+
+            // Validate full name
+            if (!fullName.value.trim() || fullName.value.length < 2) {
+                showError(fullName, 'full-name-error');
+                isValid = false;
+            }
+
+            // Validate age
+            if (!age.value || age.value < 1 || age.value > 120) {
+                showError(age, 'age-error');
+                isValid = false;
+            }
+
+            // Validate gender
+            if (!gender.value) {
+                showError(gender, 'gender-error');
+                isValid = false;
+            }
+
+            // Validate contact
+            if (!/^[0-9]{10}$/.test(contact.value)) {
+                showError(contact, 'contact-error');
+                isValid = false;
+            }
+
+            // Validate email
+            if (!/^\S+@\S+\.\S+$/.test(email.value)) {
+                showError(email, 'email-error');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function showError(field, errorId) {
+            field.classList.add('error');
+            document.getElementById(errorId).style.display = 'block';
+        }
+
+        function confirmBooking() {
+            if (!validateForm()) {
+                return;
+            }
+
+            const fullName = document.getElementById('full-name').value;
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const contact = document.getElementById('contact').value;
+            const email = document.getElementById('email').value;
+
+            const bookingDetails = {
+                trainName,
+                trainNumber,
+                depTime,
+                arrTime,
+                duration,
+                depStation,
+                arrStation,
+                classType,
+                classPrice,
+                travelDate,
+                passenger: { fullName, age, gender, contact, email }
+            };
+
+            alert(`Booking Confirmed!\n\n` +
+                  `PNR: ${Math.random().toString(36).substr(2, 10).toUpperCase()}\n` +
+                  `Train: ${trainName} (${trainNumber})\n` +
+                  `Class: ${classType}\n` +
+                  `Passenger: ${fullName}\n` +
+                  `Total: ₹${total}\n` +
+                  `Confirmation sent to: ${email}`);
+
+            document.getElementById('passenger-form').reset();
+        }
+    </script>
+</body>
+</html>

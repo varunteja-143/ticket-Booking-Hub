@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concerts - Book Your Show</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c8eff;
+            --secondary: #ff6b6b;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f8f9fa;
+            --gray: #a0a0a0;
+            --dark-gray: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            padding-top: 70px;
+        }
+
+        /* Fixed Top Navigation - Same as HomePage */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--darker);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content Styles */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            text-align: center;
+            padding: 60px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .city-tabs {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 30px 0;
+            padding: 0 20px;
+        }
+
+        .city-tab {
+            padding: 12px 30px;
+            cursor: pointer;
+            background-color: var(--darker);
+            border-radius: 25px;
+            border: 2px solid var(--primary);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 16px;
+            color: var(--light);
+        }
+
+        .city-tab:hover, .city-tab.active {
+            background-color: var(--primary);
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(108, 142, 255, 0.4);
+            border-color: transparent;
+        }
+
+        .concert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .concert-card {
+            background-color: var(--darker);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .concert-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            border-color: rgba(108, 142, 255, 0.3);
+        }
+
+        .concert-image {
+            position: relative;
+            height: 200px;
+        }
+
+        .concert-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .concert-card:hover .concert-image img {
+            opacity: 0.85;
+        }
+
+        .concert-info {
+            padding: 20px;
+        }
+
+        .concert-date {
+            color: var(--gray);
+            font-size: 14px;
+            margin: 8px 0;
+        }
+
+        .concert-type {
+            color: var(--secondary);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .know-more {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            margin: 15px 0 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .know-more:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--darker);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                clip-path: circle(0px at 90% -10%);
+                transition: all 0.5s ease-out;
+            }
+            
+            .nav-links.active {
+                clip-path: circle(1000px at 90% -10%);
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+            
+            .concert-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .header {
+                padding: 40px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .city-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .city-tab {
+                width: 80%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Top Navigation - Same as HomePage -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-ticket-alt"></i>
+                <span>TicketBookingHub</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="HomePage.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="Movies.html"><i class="fas fa-film"></i> Movies</a></li>
+                <li><a href="Concerts.html" class="active"><i class="fas fa-music"></i> Concerts</a></li>
+                <li><a href="TrainTicketBooking.html"><i class="fas fa-train"></i> Trains</a></li>
+                <li><a href="buses.html"><i class="fas fa-bus"></i> Buses</a></li>
+                <li><a href="About.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="contactus.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Upcoming Concerts</h1>
+            <p>Book your favorite music events across India | April - May 2025</p>
+        </div>
+        
+        <div class="city-tabs">
+            <div class="city-tab active" onclick="showConcerts('mumbai')">Mumbai</div>
+            <div class="city-tab" onclick="showConcerts('delhi')">Delhi</div>
+            <div class="city-tab" onclick="showConcerts('bengaluru')">Bengaluru</div>
+            <div class="city-tab" onclick="showConcerts('hyderabad')">Hyderabad</div>
+            <div class="city-tab" onclick="showConcerts('chennai')">Chennai</div>
+        </div>
+
+        <div id="concert-container" class="concert-grid"></div>
+    </div>
+
+    <script>
+        const concerts = {
+            mumbai: [
+                {id: 1, name: "Arijit Singh Live", type: "Pop", date: "15 Apr 2025", image: "C01.jpg"},
+                {id: 2, name: "Sunburn Festival", type: "EDM", date: "18 Apr 2025", image: "C02.jpg"},
+                {id: 3, name: "Rahat Fateh Ali Khan", type: "Sufi", date: "20 Apr 2025", image: "C03.jpg"},
+                {id: 4, name: "Local Band Night", type: "Rock", date: "23 Apr 2025", image: "C04.jpg"}
+            ],
+            delhi: [
+                {id: 5, name: "Coldplay Tour", type: "Rock", date: "16 Apr 2025", image: "C05.jpg"},
+                {id: 6, name: "Anuv Jain Live", type: "Indie", date: "19 Apr 2025", image: "C06.jpg"},
+                {id: 7, name: "Pritam Concert", type: "Bollywood", date: "21 Apr 2025", image: "C07.jpg"},
+                {id: 8, name: "Jazz Night", type: "Jazz", date: "24 Apr 2025", image: "C08.jpg"}
+            ],
+            bengaluru: [
+                {id: 9, name: "Armaan Malik", type: "Pop", date: "17 Apr 2025", image: "C09.jpg"},
+                {id: 10, name: "Techno Fest", type: "EDM", date: "20 Apr 2025", image: "C10.jpg"},
+                {id: 11, name: "Karthik Live", type: "Melody", date: "22 Apr 2025", image: "C11.jpg"},
+                {id: 12, name: "Rock Revolution", type: "Rock", date: "25 Apr 2025", image: "C12.jpg"}
+            ],
+            hyderabad: [
+                {id: 13, name: "Shankar Mahadevan", type: "Classical", date: "16 Apr 2025", image: "C13.jpg"},
+                {id: 14, name: "DJ Chetas", type: "EDM", date: "19 Apr 2025", image: "C15.jpg"},
+                {id: 15, name: "Sid Sriram", type: "Melody", date: "21 Apr 2025", image: "C16.jpg"},
+                {id: 16, name: "Metal Night", type: "Metal", date: "24 Apr 2025", image: "C17.jpg"}
+            ],
+            chennai: [
+                {id: 17, name: "A R Rahman Live", type: "World", date: "15 Apr 2025", image: "C18.jpg"},
+                {id: 18, name: "Anirudh Ravichander", type: "Tamil Pop", date: "18 Apr 2025", image: "C19.jpg"},
+                {id: 19, name: "Ilayaraja Tribute", type: "Classical", date: "20 Apr 2025", image: "C20.jpg"},
+                {id: 20, name: "Fusion Night", type: "Fusion", date: "23 Apr 2025", image: "C21.jpg"}
+            ]
+        };
+
+        function showConcerts(city) {
+            const container = document.getElementById('concert-container');
+            const tabs = document.querySelectorAll('.city-tab');
+            container.innerHTML = '';
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[onclick="showConcerts('${city}')"]`).classList.add('active');
+
+            concerts[city].forEach(concert => {
+                container.innerHTML += `
+                    <div class="concert-card" data-city="${city}">
+                        <div class="concert-image">
+                            <img src="${concert.image}" alt="${concert.name}">
+                        </div>
+                        <div class="concert-info">
+                            <h3>${concert.name}</h3>
+                            <p class="concert-type">${concert.type} Music Concert</p>
+                            <p class="concert-date">${concert.date}</p>
+                            <a href="RockNightLive.html?id=${concert.id}" class="know-more">Know More</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Mobile Navigation Toggle - Same as HomePage
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => showConcerts('mumbai'));
+    </script>
+</body>
+</html>

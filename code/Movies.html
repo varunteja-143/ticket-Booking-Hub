@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coke & Popcorn - Book Your Cinema Tickets</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c8eff;
+            --secondary: #ff6b6b;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f8f9fa;
+            --gray: #a0a0a0;
+            --dark-gray: #333333;
+        }
+        
+        body {
+            padding-top: 70px;
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Fixed Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--darker);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--darker);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                clip-path: circle(0px at 90% -10%);
+                transition: all 0.5s ease-out;
+            }
+            
+            .nav-links.active {
+                clip-path: circle(1000px at 90% -10%);
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+        }
+
+        .notification-button.active {
+            background-color: white;
+            color: #22c55e;
+            border: 2px solid #22c55e;
+        }
+        .movie-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--darker);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .movie-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(108, 142, 255, 0.3);
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: -70px;
+            padding-top: 70px;
+        }
+        .book-now-btn {
+            background: linear-gradient(45deg, #6366F1, #8B5CF6);
+            transition: all 0.3s ease;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .book-now-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+        .footer-links a:hover {
+            color: #A5B4FC;
+            transform: translateX(5px);
+        }
+        .footer-links a {
+            transition: all 0.3s ease;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 0;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--primary);
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary);
+            margin: 15px auto 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Fixed Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-film"></i>
+                <span>Ticket Booking Hub</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="HomePage.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="Concerts.html"><i class="fas fa-music"></i> Concerts</a></li>
+                <li><a href="TrainTicketBooking.html"><i class="fas fa-train"></i> Trains</a></li>
+                <li><a href="buses.html"><i class="fas fa-bus"></i> Buses</a></li>
+                <li><a href="About.html"><i class="fas fa-info-circle"></i> About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Book Your Movie Tickets</h1>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">Experience the magic of cinema in premium comfort with the best snacks and drinks</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#1" class="book-now-btn">Browse Movies</a>
+                <a href="#coming-soon" class="book-now-btn" style="background: transparent; border: 2px solid white;">Coming Soon</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Now Showing Section -->
+    
+
+    <!-- Now Showing Section -->
+    <div class="container mx-auto py-12 px-4">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-3xl font-bold text-gray-800" id="1">Now Showing</h3>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <!-- Movie Card 1 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M01.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.5/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Return Of The Dragon</h4>
+                    <p class="text-gray-600 text-sm mb-3">Family Drama, Romantic • 2h 20m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹120 - ₹350</span>
+                        <button onclick="window.location.href='theaters.html?title=Return Of The Dragon&poster=M01.jpg&rating=8.5&duration=2h 20m&certificate=UA&genre=Family Drama, Romantic';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 2 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M13.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        7.9/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">L2:Empuraan</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Thriller • 2h 20m • A</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹300</span>
+                        <button onclick="window.location.href='theaters.html?title=L2:Empuraan&poster=M13.jpg&rating=7.9&duration=2h 20m&certificate=A&genre=Action, Thriller';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 3 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M03.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.2/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Vidaamuyarchi</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Crime • 2h 30m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹180 - ₹400</span>
+                        <button onclick="window.location.href='theaters.html?title=Vidaamuyarchi&poster=M03.jpg&rating=8.1&duration=2h 30m&certificate=UA&genre=Action, Crime';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 4 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M04.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.2/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">GOAT</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Adventure • 2h 50m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹100 - ₹250</span>
+                        <button onclick="window.location.href='theaters.html?title=GOAT&poster=M04.jpg&rating=7.2&duration=2h 50m&certificate=UA&genre=Action, Adventure';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 5 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M05.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        9.0/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Interstellar</h4>
+                    <p class="text-gray-600 text-sm mb-3">Sci-fi, Thriller • 1h 45m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Interstellar&poster=M05.jpg&rating=9.0&duration=1h 45m&certificate=UA&genre=Sci-fi, Thriller';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 6 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M06.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        9.5/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Mickey 17</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Comedy • 1h 25m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Mickey 17&poster=M06.jpg&rating=9.5&duration=1h 25m&certificate=UA&genre=Action, Comedy';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 7 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M07.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        7.5/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Sita Ramam</h4>
+                    <p class="text-gray-600 text-sm mb-3">Comedy, Drama • 2h 30m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Sita Ramam&poster=M07.jpg&rating=7.5&duration=2h 30m&certificate=UA&genre=Comedy, Drama';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 8 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M08.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.0/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Veera Dheeera Sooran 2</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Thriller • 2h 45m • A</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Veera Dheeera Sooran 2&poster=M08.jpg&rating=8.0&duration=2h 45m&certificate=A&genre=Action, Thriller';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 9 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M09.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.5/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Salaar</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Violence • 2h 50m • A</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Salaar&poster=M09.jpg&rating=8.5&duration=2h 50m&certificate=A&genre=Action, Violence';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 10 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M10.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        9.5/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Chhaava</h4>
+                    <p class="text-gray-600 text-sm mb-3">Periodic, Action • 2h 30m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Chhaava&poster=M10.jpg&rating=9.5&duration=2h 30m&certificate=UA&genre=Periodic, Action';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 11 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M11.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.5/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">The Diplomat</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Thriller • 2h 10m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=The Diplomat&poster=M11.jpg&rating=8.5&duration=2h 10m&certificate=UA&genre=Action, Thriller';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 12 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M12.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.7/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Avatar The Way OF Water</h4>
+                    <p class="text-gray-600 text-sm mb-3">Fantasy, Drama • 2h 19m • A</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Avatar The Way OF Water&poster=M12.jpg&rating=8.7&duration=3h 19m&certificate=A&genre=Fantasy, Drama';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 13 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M14.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        8.0/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Court (State vs A Nobody)</h4>
+                    <p class="text-gray-600 text-sm mb-3">Court, Drama • 2h 25m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Court (State vs A Nobody)&poster=M14.jpg&rating=8.0&duration=2h 25m&certificate=UA&genre=Court, Drama';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Card 14 -->
+            <div class="movie-card bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+                <div class="relative">
+                    <img src="M15.jpg" class="w-full h-80 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-400 text-gray-900 px-2 py-1 rounded-md text-sm font-bold">
+                        9.5/10
+                    </div>
+                </div>
+                <div class="p-4 flex-grow flex flex-col">
+                    <h4 class="font-bold text-lg mb-1">Devara</h4>
+                    <p class="text-gray-600 text-sm mb-3">Action, Entertainer • 2h 20m • UA</p>
+                    <div class="flex justify-between items-center mt-auto">
+                        <span class="text-indigo-600 font-medium">₹150 - ₹320</span>
+                        <button onclick="window.location.href='theaters.html?title=Devara&poster=M15.jpg&rating=9.5&duration=2h 20m&certificate=UA&genre=Action, Entertainer';" 
+                                class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 text-sm">
+                            Book <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- Special Offers Banner -->
+    <section class="bg-gradient-to-r from-purple-600 to-indigo-600 py-8 px-6 text-white">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <div class="mb-4 md:mb-0">
+                <h3 class="text-2xl font-bold mb-2">Special Weekend Offer!</h3>
+                <p class="text-lg">Get 20% off on all tickets for morning shows</p>
+            </div>
+            <button class="bg-white text-indigo-600 font-bold py-3 px-6 rounded-full hover:bg-gray-100 whitespace-nowrap">
+                Claim Offer <i class="fas fa-gift ml-2"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Coming Soon Section -->
+    <section id="coming-soon" class="py-12 bg-gray-800">
+        <div class="container">
+            <h2 class="section-title">Coming Soon</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Coming Soon Movie 1 -->
+                <div class="movie-card">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="M16.jpg" alt="HIT: THE THIRD CASE" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <span class="text-white text-xl font-bold bg-red-600 px-4 py-2 rounded-md">
+                                COMING SOON
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2 text-white">HIT: THE THIRD CASE</h3>
+                        <p class="text-gray-400 mb-4">Crime, Thriller • Expected: May 2025</p>
+                        <button class="notification-button w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 transition-colors duration-300">
+                            <i class="far fa-bell mr-2"></i> Get Notified
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coming Soon Movie 2 -->
+                <div class="movie-card">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="M17.jpg" alt="COOLIE" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <span class="text-white text-xl font-bold bg-red-600 px-4 py-2 rounded-md">
+                                COMING SOON
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2 text-white">COOLIE</h3>
+                        <p class="text-gray-400 mb-4">Action, Drama • Expected: May 2025</p>
+                        <button class="notification-button w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 transition-colors duration-300">
+                            <i class="far fa-bell mr-2"></i> Get Notified
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coming Soon Movie 3 -->
+                <div class="movie-card">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="M18.jpg" alt="RETRO" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <span class="text-white text-xl font-bold bg-red-600 px-4 py-2 rounded-md">
+                                COMING SOON
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-bold text-xl mb-2 text-white">RETRO</h3>
+                        <p class="text-gray-400 mb-4">Crime, Thriller • Expected: Sep 2025</p>
+                        <button class="notification-button w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 transition-colors duration-300">
+                            <i class="far fa-bell mr-2"></i> Get Notified
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="py-12 bg-gray-900">
+        <div class="container">
+            <h2 class="section-title">Why Choose Us?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-6 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-ticket-alt text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-xl mb-2 text-white">Easy Booking</h4>
+                    <p class="text-gray-400">Quick and hassle-free ticket booking process with multiple payment options.</p>
+                </div>
+                <div class="text-center p-6 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-percentage text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-xl mb-2 text-white">Best Offers</h4>
+                    <p class="text-gray-400">Exclusive discounts and cashback offers for our regular customers.</p>
+                </div>
+                <div class="text-center p-6 rounded-lg hover:bg-gray-800 transition-colors duration-300">
+                    <div class="bg-indigo-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-headset text-indigo-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-xl mb-2 text-white">24/7 Support</h4>
+                    <p class="text-gray-400">Dedicated customer support to assist you with any queries or issues.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6 px-4 border-t border-gray-800">
+        <div class="container">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-film text-2xl text-indigo-400"></i>
+                        <h3 class="text-2xl font-bold">Ticket Booking Hub</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Your ultimate destination for movie tickets and entertainment.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="HomePage.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Home</a></li>
+                        <li><a href="movies.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Movies</a></li>
+                        <li><a href="concerts.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Concerts</a></li>
+                        <li><a href="TrainTicketBooking.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Trains</a></li>
+                        <li><a href="buses.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Buses</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2 text-indigo-400"></i>
+                            <span>123 Cinema Street, Movie City, MC 12345</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2 text-indigo-400"></i>
+                            <span>+1 (234) 567-8900</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-indigo-400"></i>
+                            <span>info@ticketbookinghub.com</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe to get updates on upcoming movies and special offers.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full">
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-gray-400">
+                <p>© 2023 Ticket Booking Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Navigation Toggle
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Notification buttons functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationButtons = document.querySelectorAll('.notification-button');
+            
+            notificationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    
+                    if (this.classList.contains('active')) {
+                        this.innerHTML = '<i class="fas fa-bell mr-2"></i> Notifications On';
+                        this.classList.remove('bg-green-500', 'hover:bg-green-600');
+                    } else {
+                        this.innerHTML = '<i class="far fa-bell mr-2"></i> Get Notified';
+                        this.classList.add('bg-green-500', 'hover:bg-green-600');
+                    }
+                    
+                    const toast = document.createElement('div');
+                    toast.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-md shadow-lg animate-fadeInOut';
+                    toast.textContent = this.classList.contains('active') 
+                        ? 'You will be notified when tickets are available!' 
+                        : 'Notification preference updated';
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 3000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

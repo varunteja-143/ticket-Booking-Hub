@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Ticket Booking HUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+            background: url('Open.jpg') no-repeat center center;
+            background-size: cover;
+            text-align: center;
+            color: white;
+        }
+        .welcome-section {
+            position: absolute;
+            top: 10%;
+            width: 60%; 
+        }
+        .welcome-section h1 {
+            font-size: 36px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+        .welcome-section p {
+            font-size: 18px;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        .container {
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+            width: 350px;
+            text-align: left;
+            padding: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            background: linear-gradient(90deg, #ff5733, #ff914d);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #e04e2a, #ff6a39);
+        }
+        .toggle-link {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .toggle-link a {
+            color: #ff914d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function toggleForm() {
+            document.getElementById('login-form').classList.toggle('hidden');
+            document.getElementById('signup-form').classList.toggle('hidden');
+        }
+        function redirectToHome(event) {
+            event.preventDefault();
+            window.location.href = 'Animation.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="welcome-section">
+        <h1>Welcome to Ticket Booking HUB 🎟️</h1>
+        <p>Your gateway to seamless ticket booking. Fast, secure, and hassle-free.</p>
+    </div>
+    
+    <div class="container">
+        <div id="login-form">
+            <h2>Login</h2>
+            <form onsubmit="redirectToHome(event)">
+                <div class="input-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <p class="toggle-link">Don't have an account? <a href="#" onclick="toggleForm()">Sign up</a></p>
+        </div>
+        
+        <div id="signup-form" class="hidden">
+            <h2>Sign Up</h2>
+            <form onsubmit="redirectToHome(event)">
+                <div class="input-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-username">Username</label>
+                    <input type="text" id="signup-username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+            <p class="toggle-link">Already have an account? <a href="#" onclick="toggleForm()">Login</a></p>
+        </div>
+    </div>
+</body>
+</html>

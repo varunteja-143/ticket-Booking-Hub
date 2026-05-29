@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Seats - Ticket Booking Hub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c8eff;
+            --secondary: #ff6b6b;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f8f9fa;
+            --gray: #a0a0a0;
+            --dark-gray: #333333;
+        }
+        
+        body {
+            padding-top: 70px;
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Fixed Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--darker);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--darker);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                clip-path: circle(0px at 90% -10%);
+                transition: all 0.5s ease-out;
+            }
+            
+            .nav-links.active {
+                clip-path: circle(1000px at 90% -10%);
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+        }
+
+        .seat {
+            width: 35px;
+            height: 35px;
+            margin: 5px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .seat.available {
+            background-color: #374151;
+            color: var(--light);
+            border: 1px solid var(--gray);
+        }
+        .seat.selected {
+            background-color: var(--primary);
+            color: white;
+        }
+        .seat.booked {
+            background-color: #1f2937;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+        .seat.premium {
+            background-color: #f59e0b;
+            color: white;
+        }
+        .seat.balcony {
+            background-color: #8b5cf6;
+            color: white;
+        }
+        .seat:hover:not(.booked) {
+            transform: scale(1.1);
+        }
+        .screen {
+            background: linear-gradient(to bottom, #4b5563, #1f2937, #4b5563);
+            height: 25px;
+            width: 85%;
+            margin: 0 auto 40px;
+            transform: perspective(200px) rotateX(-20deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .progress-step.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        .progress-step.completed {
+            background-color: #10b981;
+            color: white;
+        }
+        .row-label {
+            width: 30px;
+            text-align: right;
+            margin-right: 15px;
+            font-weight: bold;
+            color: var(--light);
+        }
+        .row-container {
+            margin-bottom: 15px;
+        }
+        .section-label {
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0 10px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Fixed Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-film"></i>
+                <span>Ticket Booking Hub</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="HomePage.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="Concerts.html"><i class="fas fa-music"></i> Concerts</a></li>
+                <li><a href="TrainTicketBooking.html"><i class="fas fa-train"></i> Trains</a></li>
+                <li><a href="buses.html"><i class="fas fa-bus"></i> Buses</a></li>
+                <li><a href="About.html"><i class="fas fa-info-circle"></i> About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Booking Progress -->
+    <div class="container">
+        <div class="flex justify-center mb-8">
+            <div class="flex items-center">
+                <div class="progress-step completed rounded-full w-10 h-10 flex items-center justify-center font-bold">1</div>
+                <div class="w-16 md:w-24 h-1 bg-green-300 mx-2"></div>
+                <div class="progress-step active rounded-full w-10 h-10 flex items-center justify-center font-bold">2</div>
+                <div class="w-16 md:w-24 h-1 bg-gray-700 mx-2"></div>
+                <div class="progress-step rounded-full w-10 h-10 flex items-center justify-center font-bold bg-gray-700 text-gray-400">3</div>
+                <div class="w-16 md:w-24 h-1 bg-gray-700 mx-2"></div>
+                <div class="progress-step rounded-full w-10 h-10 flex items-center justify-center font-bold bg-gray-700 text-gray-400">4</div>
+            </div>
+        </div>
+        <div class="flex justify-center text-sm md:text-base mb-8">
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-green-600">Select Theater</div>
+            </div>
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-indigo-400">Choose Seats</div>
+            </div>
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-gray-500">Payment</div>
+            </div>
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-gray-500">Confirmation</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <div>
+                    <h2 id="movie-title" class="text-2xl font-bold text-white">Movie Title</h2>
+                    <p id="theater-info" class="text-gray-400">PVR: Forum Mall, Koramangala | 10:00 AM</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <span id="selected-seats" class="text-gray-300 font-semibold">Selected Seats: None</span>
+                    <span id="total-price" class="text-green-400 font-bold ml-4">Total: ₹0</span>
+                </div>
+            </div>
+
+            <!-- Seat Map -->
+            <div class="text-center">
+                <div class="screen"></div>
+                <div id="seat-map" class="flex flex-col items-center max-w-5xl mx-auto">
+                    <!-- Seats will be generated by JavaScript -->
+                </div>
+                <div class="mt-6 flex flex-wrap justify-center gap-6 text-sm text-gray-300">
+                    <div class="flex items-center">
+                        <div class="seat available mr-2"></div> Regular (₹120)
+                    </div>
+                    <div class="flex items-center">
+                        <div class="seat premium mr-2"></div> Premium (₹180)
+                    </div>
+                    <div class="flex items-center">
+                        <div class="seat balcony mr-2"></div> Balcony (₹250)
+                    </div>
+                    <div class="flex items-center">
+                        <div class="seat booked mr-2"></div> Booked
+                    </div>
+                    <div class="flex items-center">
+                        <div class="seat selected mr-2"></div> Selected
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-8 flex justify-center gap-4">
+                <a href="Movies.html" class="bg-gray-700 text-white py-3 px-6 rounded-md hover:bg-gray-600">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </a>
+                <button id="proceed-btn" class="bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 disabled:bg-gray-600 disabled:cursor-not-allowed" disabled>
+                    Proceed to Payment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6 px-4 border-t border-gray-800">
+        <div class="container">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-film text-2xl text-indigo-400"></i>
+                        <h3 class="text-2xl font-bold">Ticket Booking Hub</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Your ultimate destination for movie tickets and entertainment.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="HomePage.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Home</a></li>
+                        <li><a href="movies.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Movies</a></li>
+                        <li><a href="concerts.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Concerts</a></li>
+                        <li><a href="TrainTicketBooking.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Trains</a></li>
+                        <li><a href="buses.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Buses</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2 text-indigo-400"></i>
+                            <span>123 Cinema Street, Movie City, MC 12345</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2 text-indigo-400"></i>
+                            <span>+1 (234) 567-8900</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-indigo-400"></i>
+                            <span>info@ticketbookinghub.com</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe to get updates on upcoming movies and special offers.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full">
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-gray-400">
+                <p>© 2023 Ticket Booking Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Navigation Toggle
+            const navToggle = document.getElementById('navToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            navToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+
+            // Get movie and theater details from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieTitle = urlParams.get('title') || 'Movie Title';
+            document.getElementById('movie-title').textContent = movieTitle;
+            document.getElementById('theater-info').textContent = "PVR: Forum Mall, Koramangala | 10:00 AM"; // Hardcoded for demo
+
+            // Seat pricing and configuration
+            const prices = { regular: 120, premium: 180, balcony: 250 };
+            const maxSeats = 8;
+            const seatMap = document.getElementById('seat-map');
+            let selectedSeats = [];
+
+            // Seat layout configuration
+            const layout = [
+                { rows: 5, seatsPerRow: 12, type: 'regular', label: 'Regular Seats' }, // Rows A-E
+                { rows: 5, seatsPerRow: 14, type: 'premium', label: 'Premium Seats' }, // Rows F-J
+                { rows: 5, seatsPerRow: 16, type: 'balcony', label: 'Balcony Seats' }  // Rows K-O
+            ];
+            const bookedSeats = [3, 7, 12, 19, 25, 33, 40, 48, 55, 63, 72, 81, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180];
+            let seatCounter = 1;
+
+            // Generate seat map
+            layout.forEach((section, sectionIndex) => {
+                // Section label
+                const sectionLabel = document.createElement('div');
+                sectionLabel.className = 'section-label';
+                sectionLabel.textContent = section.label;
+                seatMap.appendChild(sectionLabel);
+
+                // Rows
+                for (let row = 0; row < section.rows; row++) {
+                    const rowDiv = document.createElement('div');
+                    rowDiv.className = 'flex items-center row-container';
+
+                    // Row label
+                    const rowLabel = document.createElement('div');
+                    rowLabel.className = 'row-label';
+                    rowLabel.textContent = String.fromCharCode(65 + row + (sectionIndex * 5)); // A-O
+                    rowDiv.appendChild(rowLabel);
+
+                    // Seats
+                    for (let seat = 1; seat <= section.seatsPerRow; seat++) {
+                        const seatNum = seatCounter++;
+                        const seatDiv = document.createElement('div');
+                        seatDiv.className = 'seat';
+                        seatDiv.textContent = `${String.fromCharCode(65 + row + (sectionIndex * 5))}-${seat}`;
+                        seatDiv.dataset.seatNum = seatNum;
+                        seatDiv.dataset.price = prices[section.type];
+
+                        // Assign seat type
+                        seatDiv.classList.add(section.type);
+                        if (bookedSeats.includes(seatNum)) {
+                            seatDiv.classList.remove(section.type);
+                            seatDiv.classList.add('booked');
+                        }
+
+                        seatDiv.addEventListener('click', function() {
+                            if (!this.classList.contains('booked')) {
+                                if (this.classList.contains('selected')) {
+                                    this.classList.remove('selected');
+                                    this.classList.add(section.type);
+                                    selectedSeats = selectedSeats.filter(s => s !== seatNum);
+                                } else if (selectedSeats.length < maxSeats) {
+                                    this.classList.remove(section.type);
+                                    this.classList.add('selected');
+                                    selectedSeats.push(seatNum);
+                                } else {
+                                    alert(`You can only select up to ${maxSeats} seats.`);
+                                    return;
+                                }
+                                updateSummary();
+                            }
+                        });
+
+                        rowDiv.appendChild(seatDiv);
+                    }
+                    seatMap.appendChild(rowDiv);
+                }
+            });
+
+            // Update selected seats and total price
+            function updateSummary() {
+                const selectedCount = selectedSeats.length;
+                const seatLabels = selectedSeats.map(num => {
+                    const seat = seatMap.querySelector(`[data-seat-num="${num}"]`);
+                    return seat.textContent;
+                });
+                document.getElementById('selected-seats').textContent = `Selected Seats: ${seatLabels.join(', ') || 'None'}`;
+
+                const totalPrice = selectedSeats.reduce((sum, seatNum) => {
+                    const seat = seatMap.querySelector(`[data-seat-num="${seatNum}"]`);
+                    return sum + parseInt(seat.dataset.price);
+                }, 0);
+                document.getElementById('total-price').textContent = `Total: ₹${totalPrice}`;
+
+                document.getElementById('proceed-btn').disabled = selectedCount === 0;
+            }
+
+            // Proceed to payment
+            document.getElementById('proceed-btn').addEventListener('click', function() {
+                if (selectedSeats.length > 0) {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('seats', selectedSeats.map(num => {
+                        const seat = seatMap.querySelector(`[data-seat-num="${num}"]`);
+                        return seat.textContent;
+                    }).join(','));
+                    params.set('total', document.getElementById('total-price').textContent.replace('Total: ₹', ''));
+                    window.location.href = 'Payment.html?' + params.toString();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

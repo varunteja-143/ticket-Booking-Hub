@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation - Ticket Booking Hub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6c8eff;
+            --secondary: #ff6b6b;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f8f9fa;
+            --gray: #a0a0a0;
+            --dark-gray: #333333;
+        }
+        
+        body {
+            padding-top: 70px;
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Fixed Top Navigation */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--darker);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--primary);
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a:hover, 
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--darker);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                clip-path: circle(0px at 90% -10%);
+                transition: all 0.5s ease-out;
+            }
+            
+            .nav-links.active {
+                clip-path: circle(1000px at 90% -10%);
+            }
+            
+            .nav-links li {
+                margin: 15px 0;
+            }
+            
+            .nav-toggle {
+                display: block;
+            }
+        }
+
+        .progress-step.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        .progress-step.completed {
+            background-color: #10b981;
+            color: white;
+        }
+        .ticket-card {
+            background: linear-gradient(135deg, var(--primary), #10b981);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        .qr-code {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-film"></i>
+                <span>Ticket Booking Hub</span>
+            </a>
+            
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <ul class="nav-links" id="navLinks">
+                <li><a href="HomePage.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="Concerts.html"><i class="fas fa-music"></i> Concerts</a></li>
+                <li><a href="TrainTicketBooking.html"><i class="fas fa-train"></i> Trains</a></li>
+                <li><a href="buses.html"><i class="fas fa-bus"></i> Buses</a></li>
+                <li><a href="About.html"><i class="fas fa-info-circle"></i> About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Booking Progress -->
+    <div class="container">
+        <div class="flex justify-center mb-8">
+            <div class="flex items-center">
+                <div class="progress-step completed rounded-full w-10 h-10 flex items-center justify-center font-bold">1</div>
+                <div class="w-16 md:w-24 h-1 bg-green-300 mx-2"></div>
+                <div class="progress-step completed rounded-full w-10 h-10 flex items-center justify-center font-bold">2</div>
+                <div class="w-16 md:w-24 h-1 bg-green-300 mx-2"></div>
+                <div class="progress-step completed rounded-full w-10 h-10 flex items-center justify-center font-bold">3</div>
+                <div class="w-16 md:w-24 h-1 bg-green-300 mx-2"></div>
+                <div class="progress-step active rounded-full w-10 h-10 flex items-center justify-center font-bold">4</div>
+            </div>
+        </div>
+        <div class="flex justify-center text-sm md:text-base mb-8">
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-green-600">Select Theater</div>
+            </div>
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-green-600">Choose Seats</div>
+            </div>
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-green-600">Payment</div>
+            </div>
+            <div class="text-center mx-4 md:mx-8">
+                <div class="font-semibold text-indigo-400">Confirmation</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-center mb-6 text-white">Booking Confirmed!</h2>
+            <p class="text-center text-gray-400 mb-6">Thank you for your booking. Your tickets are confirmed. Enjoy the show!</p>
+
+            <!-- Ticket Card -->
+            <div class="ticket-card mx-auto max-w-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 id="movie-title" class="text-xl font-bold">Movie Title</h3>
+                        <p id="theater-info" class="text-sm opacity-80">PVR: Forum Mall, Koramangala | 10:00 AM</p>
+                    </div>
+                    <div class="qr-code">
+                        <!-- Placeholder for QR Code -->
+                        <i class="fas fa-qrcode text-3xl text-gray-700"></i>
+                    </div>
+                </div>
+                <div class="border-t border-white border-opacity-30 pt-4">
+                    <p id="selected-seats" class="text-sm">Seats: </p>
+                    <p id="total-price" class="text-sm">Total Paid: ₹0</p>
+                    <p id="payment-method" class="text-sm">Payment Method: </p>
+                    <p id="booking-id" class="text-sm font-semibold">Booking ID: #CP123456</p>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-8 text-center">
+                <button id="download-ticket" class="bg-indigo-600 text-white py-3 px-6 rounded-md hover:bg-indigo-700 mr-4">
+                    <i class="fas fa-download mr-2"></i> Download Ticket
+                </button>
+                <a href="HomePage.html" class="bg-gray-700 text-white py-3 px-6 rounded-md hover:bg-gray-600">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6 px-4 border-t border-gray-800">
+        <div class="container">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-film text-2xl text-indigo-400"></i>
+                        <h3 class="text-2xl font-bold">Ticket Booking Hub</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Your ultimate destination for movie tickets and entertainment.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white text-xl"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="HomePage.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Home</a></li>
+                        <li><a href="movies.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Movies</a></li>
+                        <li><a href="concerts.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Concerts</a></li>
+                        <li><a href="TrainTicketBooking.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Trains</a></li>
+                        <li><a href="buses.html" class="text-gray-400 hover:text-indigo-400 transition-colors">Buses</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2 text-indigo-400"></i>
+                            <span>123 Cinema Street, Movie City, MC 12345</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2 text-indigo-400"></i>
+                            <span>+1 (234) 567-8900</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2 text-indigo-400"></i>
+                            <span>info@ticketbookinghub.com</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe to get updates on upcoming movies and special offers.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full">
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-6 text-center text-gray-400">
+                <p>© 2023 Ticket Booking Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Navigation Toggle
+            const navToggle = document.getElementById('navToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            navToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                    }
+                });
+            });
+
+            // Get booking details from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieTitle = urlParams.get('title') || 'Movie Title';
+            const seats = urlParams.get('seats') || '';
+            const total = urlParams.get('total') || '₹0';
+            const paymentMethod = urlParams.get('payment_method') || 'Unknown';
+
+            // Update ticket details
+            document.getElementById('movie-title').textContent = movieTitle;
+            document.getElementById('theater-info').textContent = "PVR: Forum Mall, Koramangala | 10:00 AM"; // Hardcoded for demo
+            document.getElementById('selected-seats').textContent = `Seats: ${seats}`;
+            document.getElementById('total-price').textContent = `Total Paid: ${total}`;
+            document.getElementById('payment-method').textContent = `Payment Method: ${paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)}`;
+            document.getElementById('booking-id').textContent = `Booking ID: #CP${Math.floor(100000 + Math.random() * 900000)}`; // Random ID for demo
+
+            // Download ticket button (placeholder functionality)
+            document.getElementById('download-ticket').addEventListener('click', function() {
+                alert('Ticket download functionality is not implemented in this demo. In a real application, this would generate a PDF or image of your ticket.');
+            });
+        });
+    </script>
+</body>
+</html>

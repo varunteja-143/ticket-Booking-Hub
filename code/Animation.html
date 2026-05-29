@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Booking Hub!</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            font-size: 4rem;
+            font-weight: bold;
+            display: flex;
+            gap: 15px;
+        }
+        .letter {
+            opacity: 0;
+            animation: bounce 1s ease-out forwards;
+        }
+        @keyframes bounce {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.8);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <script>
+            const text = "TICKET BOOKING HUB!";
+            const container = document.querySelector(".container");
+            
+            text.split("").forEach((char, index) => {
+                let span = document.createElement("span");
+                span.textContent = char;
+                span.classList.add("letter");
+                span.style.animationDelay = `${index * 0.1}s`;
+                
+                if (index < 6) { // "TICKET"
+                    span.style.color = "yellow";
+                } else if (index > 14) { // "HUB!"
+                    span.style.color = "orange";
+                } else {
+                    span.style.color = "white";
+                }
+                
+                container.appendChild(span);
+            });
+            
+            // Redirect to HomePage.html after 4 seconds
+            setTimeout(() => {
+                window.location.href = "HomePage.html";
+            }, 4000);
+        </script>
+    </div>
+</body>
+</html>
